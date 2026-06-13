@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React 19'da use() hook'u — Agora</title>
+  <meta name="description" content="React 19'da yeni use() hook'u tartışması ve cevaplar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
+</head>
+<body>
+
+  <!-- ===================== BAŞLIK ===================== -->
+  <header class="site-header">
+    <div class="container">
+      <button class="icon-btn menu-toggle" data-menu-toggle aria-label="Menüyü aç">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <a href="index.html" class="brand">
+        <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20l1-4.1A8.4 8.4 0 1 1 21 11.5z"/></svg></span>
+        Agora
+      </a>
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" placeholder="Konularda ara…" />
+        <kbd>/</kbd>
+      </label>
+      <div class="header-actions">
+        <button class="icon-btn" data-theme-toggle aria-label="Temayı değiştir">
+          <svg class="i-sun hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Bildirimler">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="dot"></span>
+        </button>
+        <a href="#" class="btn btn-primary"><span class="label-hide">Yeni Konu</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </a>
+        <div class="avatar presence" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">HK</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== GÖVDE ===================== -->
+  <div class="container">
+    <div class="layout">
+
+      <!-- ----- SOL KENAR ÇUBUĞU ----- -->
+      <aside class="sidebar">
+        <nav class="nav-group">
+          <h4>Keşfet</h4>
+          <a href="index.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg> Anasayfa</a>
+          <a href="#" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> Popüler <span class="count">128</span></a>
+          <a href="#" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Son Konular</a>
+        </nav>
+        <nav class="nav-group">
+          <h4>Kategoriler</h4>
+          <a href="category.html" class="nav-link"><span class="cat-dot" style="background:#6366f1"></span> Genel Sohbet <span class="count">2.1k</span></a>
+          <a href="category.html" class="nav-link active"><span class="cat-dot" style="background:#0ea5e9"></span> Yazılım <span class="count">3.4k</span></a>
+          <a href="category.html" class="nav-link"><span class="cat-dot" style="background:#22c55e"></span> Tasarım <span class="count">980</span></a>
+          <a href="category.html" class="nav-link"><span class="cat-dot" style="background:#f43f5e"></span> Oyun <span class="count">1.7k</span></a>
+          <a href="category.html" class="nav-link"><span class="cat-dot" style="background:#f59e0b"></span> Donanım <span class="count">640</span></a>
+          <a href="category.html" class="nav-link"><span class="cat-dot" style="background:#a855f7"></span> Kariyer <span class="count">512</span></a>
+        </nav>
+      </aside>
+
+      <!-- ----- ANA İÇERİK ----- -->
+      <main class="main">
+
+        <nav class="breadcrumb" aria-label="İçerik haritası">
+          <a href="index.html">Anasayfa</a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          <a href="category.html">Yazılım & Geliştirme</a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="here">React 19'da use() hook'u</span>
+        </nav>
+
+        <header class="topic-header">
+          <h1>React 19'da yeni use() hook'u gerçekten oyunu değiştiriyor mu?</h1>
+          <div class="th-meta">
+            <span class="badge pin">Sabit</span>
+            <span>📁 <a href="category.html" style="color:var(--primary);font-weight:600">Yazılım & Geliştirme</a></span>
+            <span class="dot-sep">·</span>
+            <span><b data-reply-count>42</b> cevap</span>
+            <span class="dot-sep">·</span>
+            <span>1.2k görüntülenme</span>
+          </div>
+          <div class="th-tags">
+            <a href="#" class="tag"><span class="hash">#</span>react</a>
+            <a href="#" class="tag"><span class="hash">#</span>hooks</a>
+            <a href="#" class="tag"><span class="hash">#</span>javascript</a>
+          </div>
+        </header>
+
+        <div data-thread>
+
+          <!-- İLK MESAJ (OP) -->
+          <article class="post op">
+            <div class="post-side">
+              <div class="avatar lg" style="background:linear-gradient(135deg,#0ea5e9,#6366f1)">AY</div>
+              <div class="pname">Ayşe Yıldız</div>
+              <span class="prole op">Konuyu açan</span>
+              <div class="pstats">2.140 mesaj<br>Üyelik: <b>2023</b></div>
+            </div>
+            <div class="post-body">
+              <div class="post-top">
+                <span>#1</span>
+                <span class="when">13 Haziran 2026, 09:14</span>
+              </div>
+              <div class="prose">
+                <p>Selam herkese 👋 React 19 ile gelen <code>use()</code> hook'unu birkaç projede denedim ve açıkçası kafam biraz karıştı. Promise'leri ve context'i doğrudan render içinde "okuyabilmek" çok pratik görünüyor ama bazı sorularım var:</p>
+                <ul>
+                  <li>Suspense ile birlikte kullanımı veri çekme mantığımızı tamamen değiştirir mi?</li>
+                  <li>Koşullu (conditional) olarak çağrılabilmesi, klasik hook kurallarını ihlal etmiyor mu?</li>
+                  <li>Performans açısından <code>useEffect</code> + state yaklaşımına göre gerçek bir kazanç var mı?</li>
+                </ul>
+                <p>Örnek olarak şöyle bir kullanım denedim:</p>
+                <pre><code>function Profil({ kullaniciSozu }) {
+  const kullanici = use(kullaniciSozu);
+  return &lt;h2&gt;{kullanici.ad}&lt;/h2&gt;;
+}</code></pre>
+                <p>Sizce production'da kullanmaya hazır mı, yoksa biraz daha beklemeli miyiz? Deneyimlerinizi merak ediyorum.</p>
+              </div>
+              <div class="post-actions">
+                <button class="action-btn" data-like>
+                  <svg class="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                  Beğen <span class="like-count">38</span>
+                </button>
+                <button class="action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20l1-4.1A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                  Alıntıla
+                </button>
+                <span class="spacer"></span>
+                <button class="action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8"/><path d="M16 6l-4-4-4 4M12 2v14"/></svg>
+                  Paylaş
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- CEVAP 1 (en iyi cevap) -->
+          <article class="post">
+            <div class="post-side">
+              <div class="avatar lg" style="background:linear-gradient(135deg,#6366f1,#a855f7)">SD</div>
+              <div class="pname">Selin Demir</div>
+              <span class="prole mod">Moderatör</span>
+              <div class="pstats">5.980 mesaj<br>Üyelik: <b>2022</b></div>
+            </div>
+            <div class="post-body">
+              <div class="post-top">
+                <span>#2</span>
+                <span class="badge solved">En iyi cevap</span>
+                <span class="when">13 Haziran 2026, 09:41</span>
+              </div>
+              <div class="prose">
+                <p>Güzel sorular! Sırayla gideyim:</p>
+                <blockquote>Koşullu olarak çağrılabilmesi hook kurallarını ihlal etmiyor mu?</blockquote>
+                <p>Hayır, çünkü <code>use()</code> kasıtlı olarak diğer hook'lardan farklı tasarlandı. <code>if</code> bloğu veya döngü içinde çağrılabilir — React ekibi bunu özellikle istisna yaptı. Yani "hook" deniyor ama kuralları aynı değil.</p>
+                <p>Performans tarafında ise asıl kazanç <strong>kodun sadeleşmesi</strong>. <code>useEffect</code> + <code>useState</code> + yükleniyor/hata state'leri yerine Suspense sınırına bırakıyorsun. Render sayısı genelde azalıyor ama "sihirli hızlanma" beklemeyin.</p>
+                <p>Production için: veri çekmeyi bir framework (Next.js gibi) yönetiyorsa rahatça kullanılabilir. Ham promise'leri elle <code>use()</code>'a verirken referans kararlılığına dikkat edin, yoksa sonsuz döngüye girebilirsiniz.</p>
+              </div>
+              <div class="post-actions">
+                <button class="action-btn liked" data-like>
+                  <svg class="i-heart" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                  Beğen <span class="like-count">64</span>
+                </button>
+                <button class="action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20l1-4.1A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                  Alıntıla
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- CEVAP 2 -->
+          <article class="post">
+            <div class="post-side">
+              <div class="avatar lg" style="background:linear-gradient(135deg,#22c55e,#84cc16)">MK</div>
+              <div class="pname">Mert Kaya</div>
+              <span class="prole member">Üye</span>
+              <div class="pstats">412 mesaj<br>Üyelik: <b>2024</b></div>
+            </div>
+            <div class="post-body">
+              <div class="post-top">
+                <span>#3</span>
+                <span class="when">13 Haziran 2026, 10:02</span>
+              </div>
+              <div class="prose">
+                <p>Selin'in dediklerine ek olarak: ham promise'i bileşen içinde <em>oluşturup</em> <code>use()</code>'a verirseniz her render'da yeni promise üretilir. Promise'i bileşenin dışında veya bir cache katmanında tutmak şart.</p>
+                <p>Bende stabilleşene kadar şöyle bir kuralım var: <code>use()</code> sadece yukarıdan gelen, sabit referanslı promise'lerle. Geri kalanı eski yöntemle hallediyorum.</p>
+              </div>
+              <div class="post-actions">
+                <button class="action-btn" data-like>
+                  <svg class="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                  Beğen <span class="like-count">21</span>
+                </button>
+                <button class="action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20l1-4.1A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                  Alıntıla
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- CEVAP 3 -->
+          <article class="post">
+            <div class="post-side">
+              <div class="avatar lg" style="background:linear-gradient(135deg,#0ea5e9,#22d3ee)">ZA</div>
+              <div class="pname">Zeynep Acar</div>
+              <span class="prole member">Üye</span>
+              <div class="pstats">876 mesaj<br>Üyelik: <b>2023</b></div>
+            </div>
+            <div class="post-body">
+              <div class="post-top">
+                <span>#4</span>
+                <span class="when">13 Haziran 2026, 10:25</span>
+              </div>
+              <div class="prose">
+                <p>Bizim ekipte 3 aydır Next.js 15 + React 19 ile production'da. Sunucu bileşenlerinde harika çalışıyor, gerçekten kodu sadeleştirdi. İstemci tarafında ise dikkatli olmak gerek dediğiniz gibi. 👍</p>
+              </div>
+              <div class="post-actions">
+                <button class="action-btn" data-like>
+                  <svg class="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                  Beğen <span class="like-count">12</span>
+                </button>
+                <button class="action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20l1-4.1A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                  Alıntıla
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- CEVAP YAZMA -->
+        <section class="reply-box">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Cevabını yaz
+          </h3>
+          <form data-reply-form>
+            <div class="composer">
+              <div class="avatar lg" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">HK</div>
+              <textarea placeholder="Düşüncelerini paylaş… Saygılı ve yapıcı olmayı unutma."></textarea>
+            </div>
+            <div class="reply-actions">
+              <div class="toolbar-icons">
+                <button type="button" class="icon-btn" aria-label="Kalın"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"/></svg></button>
+                <button type="button" class="icon-btn" aria-label="Bağlantı"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></button>
+                <button type="button" class="icon-btn" aria-label="Kod"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></button>
+                <button type="button" class="icon-btn" aria-label="Emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></button>
+              </div>
+              <span class="spacer"></span>
+              <button type="button" class="btn btn-ghost">Önizle</button>
+              <button type="submit" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+                Gönder
+              </button>
+            </div>
+          </form>
+        </section>
+
+      </main>
+
+      <!-- ----- SAĞ KENAR ÇUBUĞU ----- -->
+      <aside class="aside">
+        <div class="card card-pad">
+          <h3 class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg>
+            Bu Konudakiler
+          </h3>
+          <div class="contributor"><span class="avatar sm" style="background:linear-gradient(135deg,#0ea5e9,#6366f1)">AY</span><div class="meta"><div class="name">Ayşe Yıldız</div><div class="pts">Konuyu açan</div></div></div>
+          <div class="contributor"><span class="avatar sm" style="background:linear-gradient(135deg,#6366f1,#a855f7)">SD</span><div class="meta"><div class="name">Selin Demir</div><div class="pts">Moderatör</div></div></div>
+          <div class="contributor"><span class="avatar sm" style="background:linear-gradient(135deg,#22c55e,#84cc16)">MK</span><div class="meta"><div class="name">Mert Kaya</div><div class="pts">Üye</div></div></div>
+          <div class="contributor"><span class="avatar sm" style="background:linear-gradient(135deg,#0ea5e9,#22d3ee)">ZA</span><div class="meta"><div class="name">Zeynep Acar</div><div class="pts">Üye</div></div></div>
+        </div>
+
+        <div class="card card-pad">
+          <h3 class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            Benzer Konular
+          </h3>
+          <ul>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border)"><a href="topic.html" style="font-size:.88rem;font-weight:600;line-height:1.4">Suspense ile veri çekme: en iyi pratikler</a><div class="faint" style="font-size:.76rem;margin-top:3px">31 cevap</div></li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border)"><a href="topic.html" style="font-size:.88rem;font-weight:600;line-height:1.4">Server Components ne zaman mantıklı?</a><div class="faint" style="font-size:.76rem;margin-top:3px">58 cevap</div></li>
+            <li style="padding:8px 0"><a href="topic.html" style="font-size:.88rem;font-weight:600;line-height:1.4">React 19 yenilikleri özeti</a><div class="faint" style="font-size:.76rem;margin-top:3px">204 cevap</div></li>
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ===================== ALTBİLGİ ===================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="about">
+          <a href="index.html" class="brand">
+            <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20l1-4.1A8.4 8.4 0 1 1 21 11.5z"/></svg></span>
+            Agora
+          </a>
+          <p>Geliştiriciler, tasarımcılar ve teknoloji meraklıları için modern, hızlı ve samimi bir topluluk forumu.</p>
+        </div>
+        <div class="footer-col"><h5>Topluluk</h5><a href="#">Kategoriler</a><a href="#">Popüler Konular</a><a href="#">Üyeler</a><a href="#">Etkinlikler</a></div>
+        <div class="footer-col"><h5>Yardım</h5><a href="#">Kurallar</a><a href="#">SSS</a><a href="#">İletişim</a><a href="#">Geri Bildirim</a></div>
+        <div class="footer-col"><h5>Kurumsal</h5><a href="#">Hakkımızda</a><a href="#">Gizlilik</a><a href="#">Kullanım Şartları</a><a href="#">Kariyer</a></div>
+      </div>
+      <div class="footer-bottom">
+        <span class="muted">© <span data-year>2026</span> Agora. Tüm hakları saklıdır.</span>
+        <div class="socials">
+          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2H21l-6.5 7.4L22 22h-6l-4.7-6.1L5.9 22H3l7-8L2 2h6.2l4.2 5.6zM17 20.2h1.6L7 3.7H5.3z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7 0-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.8v2.7c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg></a>
+          <a href="#" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4.4A19 19 0 0 0 15.3 3l-.2.5a14 14 0 0 1 4 1.3 13 13 0 0 0-11 0 14 14 0 0 1 4-1.3L11.9 3A19 19 0 0 0 4 4.4 19.6 19.6 0 0 0 2.3 17 19 19 0 0 0 8 20l.6-1.6c-.9-.3-1.7-.7-2.4-1.2l.6-.4a13 13 0 0 0 10.6 0l.6.4c-.7.5-1.5.9-2.4 1.2L16 20a19 19 0 0 0 5.7-3A19.4 19.4 0 0 0 20 4.4zM9 14c-.8 0-1.5-.8-1.5-1.7S8.2 10.6 9 10.6s1.5.8 1.5 1.7S9.8 14 9 14zm6 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7S15.8 14 15 14z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

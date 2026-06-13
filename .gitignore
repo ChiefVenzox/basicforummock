@@ -1,0 +1,19 @@
+# Örnek olarak klonlanan ilgisiz repo (Go CLI — foruma dahil değil)
+_ornek_samuel/
+
+# İşletim sistemi / OneDrive artıkları
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store
+*~
+
+# Editör
+.vscode/
+.idea/
+*.swp
+
+# Bağımlılık/çıktı klasörleri (ileride backend eklenirse)
+node_modules/
+dist/
+.cache/
