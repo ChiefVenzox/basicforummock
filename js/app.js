@@ -23,10 +23,8 @@
   }
 
   function initTheme() {
-    let theme = localStorage.getItem(STORAGE_KEY);
-    if (!theme) {
-      theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
+    // Varsayılan: AÇIK (light) tema. Kullanıcı düğmeyle geçiş yaparsa tercihi hatırlanır.
+    const theme = localStorage.getItem(STORAGE_KEY) || "light";
     applyTheme(theme);
 
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
@@ -189,6 +187,43 @@
     });
   }
 
+  /* ----- Liquid Glass: imleci takip eden ışık yansıması -------------------- */
+  function initGlassSheen() {
+    const sel = ".card, .cat-card, .stat, .post, .hero, .cat-hero, .reply-box, .sidebar";
+    const panels = document.querySelectorAll(sel);
+    if (!panels.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // dokunmatik cihazlarda atla
+    if (window.matchMedia("(hover: none)").matches) return;
+
+    let ticking = false;
+    let pending = null;
+
+    const move = (el, e) => {
+      const r = el.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      pending = { el, x, y };
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          if (pending) {
+            pending.el.style.setProperty("--mx", pending.x.toFixed(1) + "%");
+            pending.el.style.setProperty("--my", pending.y.toFixed(1) + "%");
+          }
+          ticking = false;
+        });
+      }
+    };
+
+    panels.forEach((el) => {
+      el.addEventListener("pointermove", (e) => move(el, e));
+      el.addEventListener("pointerleave", () => {
+        el.style.setProperty("--mx", "30%");
+        el.style.setProperty("--my", "0%");
+      });
+    });
+  }
+
   /* ----- Yıl güncelleme ---------------------------------------------------- */
   function initYear() {
     document.querySelectorAll("[data-year]").forEach((el) => {
@@ -205,6 +240,7 @@
     initSearchShortcut();
     initLikes();
     initComposer();
+    initGlassSheen();
     initYear();
   });
 

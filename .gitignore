@@ -8,9 +8,10 @@ desktop.ini
 .DS_Store
 *~
 
-# Editör
+# Editör / araç
 .vscode/
 .idea/
+.claude/
 *.swp
 
 # Bağımlılık/çıktı klasörleri (ileride backend eklenirse)
