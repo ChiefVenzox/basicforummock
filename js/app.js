@@ -28,6 +28,10 @@
     applyTheme(theme);
 
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
+      // initTheme hem erken hem de DOMContentLoaded'da çağrıldığı için
+      // tıklama olayının iki kez bağlanmasını (ve birbirini iptal etmesini) engelle.
+      if (btn.dataset.themeBound) return;
+      btn.dataset.themeBound = "1";
       btn.addEventListener("click", () => {
         const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
         localStorage.setItem(STORAGE_KEY, next);
