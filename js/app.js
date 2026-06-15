@@ -22,6 +22,16 @@
     });
   }
 
+  // Tema değişiminde renk/arka plan geçişlerini kısa süre yumuşatır.
+  // Sadece kullanıcı tıklamasında çalışır → ilk yüklemede sıçrama olmaz.
+  let themeAnimTimer = null;
+  function enableThemeTransition() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    root.classList.add("theme-anim");
+    clearTimeout(themeAnimTimer);
+    themeAnimTimer = setTimeout(() => root.classList.remove("theme-anim"), 480);
+  }
+
   function initTheme() {
     // Varsayılan: AÇIK (light) tema. Kullanıcı düğmeyle geçiş yaparsa tercihi hatırlanır.
     const theme = localStorage.getItem(STORAGE_KEY) || "light";
@@ -35,6 +45,7 @@
       btn.addEventListener("click", () => {
         const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
         localStorage.setItem(STORAGE_KEY, next);
+        enableThemeTransition();
         applyTheme(next);
       });
     });
