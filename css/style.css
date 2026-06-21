@@ -58,6 +58,8 @@
   --header-h: 66px;
   --maxw: 1240px;
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* geniş geometrik grotesk: başlıklara "premium ajans" hissi verir */
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
 }
 
 [data-theme="dark"] {
@@ -161,6 +163,11 @@ body::after {
   0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
   50%  { transform: translate3d(2%, -3%, 0) scale(1.08) rotate(4deg); }
   100% { transform: translate3d(-2%, 2%, 0) scale(1.04) rotate(-3deg); }
+}
+
+/* başlıklar geniş geometrik grotesk ile — gövde metni Inter kalır */
+h1, h2, h3, .brand, .num, .hero h1, .cat-hero h1, .topic-header h1, .section-head h2 {
+  font-family: var(--font-display);
 }
 
 a { color: inherit; text-decoration: none; }
@@ -492,6 +499,33 @@ ul { list-style: none; padding: 0; }
 .hero h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 6px; }
 .hero p { color: var(--text-muted); max-width: 540px; font-size: .98rem; }
 .hero .hero-actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* eyebrow: başlık üstü mikro pill etiketi (premium işaret) */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 4px 12px 4px 10px; margin-bottom: 14px;
+  border-radius: 99px;
+  border: 1px solid var(--glass-stroke);
+  background: var(--glass-bg-strong);
+  font-size: .68rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .16em; color: var(--text-muted);
+}
+.eyebrow::before {
+  content: ""; width: 6px; height: 6px; border-radius: 99px;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* button-in-button: CTA içinde, hover'da diyagonal kayan iç ikon dairesi */
+.btn .btn-ico {
+  display: inline-grid; place-items: center;
+  width: 26px; height: 26px; margin: -4px -6px -4px 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .22);
+  transition: transform .35s var(--ease-out), background .25s var(--ease);
+}
+.btn .btn-ico svg { width: 15px; height: 15px; }
+.btn:hover .btn-ico { transform: translate(3px, -2px); background: rgba(255, 255, 255, .34); }
 
 /* ----- İstatistik şeridi --------------------------------------------------- */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
@@ -886,6 +920,21 @@ ul { list-style: none; padding: 0; }
   .composer { flex-direction: column; }
   .composer .avatar { display: none; }
 }
+
+/* ==========================================================================
+   Kaydırınca beliren giriş animasyonu (JS ekler → JS yoksa içerik görünür kalır)
+   Yalnızca transform/opacity/filter — düzen tetiklemez, GPU dostu.
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(6px);
+  transition: opacity .7s var(--ease-out),
+              transform .7s var(--ease-out),
+              filter .7s var(--ease-out);
+  will-change: transform, opacity;
+}
+.reveal.is-visible { opacity: 1; transform: none; filter: none; }
 
 /* erişilebilirlik: hareketi azalt */
 @media (prefers-reduced-motion: reduce) {

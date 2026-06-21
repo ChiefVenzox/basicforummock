@@ -239,6 +239,36 @@
     });
   }
 
+  /* ----- Kaydırınca beliren giriş animasyonu ------------------------------- */
+  // Aşamalı (staggered) fade-up + hafif blur. İçerik yalnızca JS + IO varsa ve
+  // hareket azaltma kapalıysa gizlenir → aksi halde her zaman görünür kalır.
+  function initReveal() {
+    if (!("IntersectionObserver" in window)) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const sel = ".hero, .stat, .cat-card, .topic, .post, .reply-box, .section-head, .pagination";
+    const els = Array.from(document.querySelectorAll(sel));
+    if (!els.length) return;
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+
+    els.forEach((el) => {
+      el.classList.add("reveal");
+      // grup içinde kademeli gecikme (en fazla 240ms)
+      const sibs = el.parentElement ? el.parentElement.children : [el];
+      const idx = Array.prototype.indexOf.call(sibs, el);
+      el.style.transitionDelay = Math.min(idx * 55, 240) + "ms";
+      io.observe(el);
+    });
+  }
+
   /* ----- Yıl güncelleme ---------------------------------------------------- */
   function initYear() {
     document.querySelectorAll("[data-year]").forEach((el) => {
@@ -256,6 +286,7 @@
     initLikes();
     initComposer();
     initGlassSheen();
+    initReveal();
     initYear();
   });
 
