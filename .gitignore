@@ -11,7 +11,9 @@ desktop.ini
 # Editör / araç
 .vscode/
 .idea/
-.claude/
+# .claude yerel ayarları hariç; ancak kurulan skill bağlantıları paylaşılsın
+.claude/*
+!.claude/skills/
 *.swp
 
 # Bağımlılık/çıktı klasörleri (ileride backend eklenirse)
